@@ -2,7 +2,7 @@ import { BuilderContext, BuilderOutput, createBuilder } from "@angular-devkit/ar
 import { JsonObject, workspaces } from "@angular-devkit/core";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { mkdir, readFile, writeFile } from "fs";
-import { obfuscate, ObfuscatedCode } from "javascript-obfuscator";
+import { obfuscate, ObfuscationResult } from "javascript-obfuscator";
 import { dirname, join, normalize } from "path";
 import readdir from "readdirp";
 import { promisify } from "util";
@@ -47,7 +47,7 @@ async function obfuscateJsFiles(context: BuilderContext, options: ObfuscateComma
             continue;
         }
         context.logger.info(`Obfuscate: ${item.fullPath}`);
-        const result: ObfuscatedCode = obfuscate((await preadFile(item.fullPath)).toString(), options);
+        const result: ObfuscationResult = obfuscate((await preadFile(item.fullPath)).toString(), options);
         const jobs: Array<Promise<void>> = new Array<Promise<void>>(2);
         const sourceMapFile = `${item.fullPath}.map`;
         if (options.sourceMap && options.sourceMapMode === "separate") {
